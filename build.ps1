@@ -1,0 +1,1 @@
+gcc ./src/finder.c -o MKT.exe
