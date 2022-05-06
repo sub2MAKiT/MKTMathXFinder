@@ -26,10 +26,10 @@ typedef struct xFlags MKTXFLAGS;
 
 double simpleEquationParser(char * charArray, size_t sizeOfArray)
 {
-
+    
 }
 
-double checkForDivision(char * charArray,size_t sizeOfArray, short character) {
+double checkForDivision(char * charArray,size_t sizeOfArray) {
     double FinalInt; // comedy
 
 
@@ -37,19 +37,22 @@ double checkForDivision(char * charArray,size_t sizeOfArray, short character) {
     return FinalInt;
 }
 
-size_t bracketCopywriter(char ** charArray, short * currentCharacter)
+size_t bracketCopywriter(char ** charArray, short * currentCharacter, short start, short end)
 {
     size_t finalInt; // comedy strikes again
-    char * copy = malloc(7);
 
-    copy[0] = 'B';
-    copy[1] = 'R';
-    copy[2] = 'A';
-    copy[3] = 'C';
-    copy[4] = 'K';
-    copy[5] = 'E';
-    copy[6] = 'T';
-    finalInt = 7;
+
+    finalInt = end-start+1;
+    // double finalEquation = checkForDivision();
+    char * copy = malloc(finalInt);
+
+
+
+    for(int i = 0; i < finalInt;i++)
+    {
+        copy[i] = 'B';
+    }
+
 
 
     charArray[0]=realloc(charArray[0],*currentCharacter+finalInt);
@@ -62,9 +65,9 @@ size_t bracketCopywriter(char ** charArray, short * currentCharacter)
     return finalInt;
 }
 
-char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
+size_t bracketCopywriterBuffer(char * copy,char * charArray, size_t sizeOfArray)
 {
-    char * copy = malloc(sizeOfArray);
+    size_t finalInt;
     short currentCharacter = 0;
     short ABrackets = 0;
     for(int i = 0; i < sizeOfArray;i++)
@@ -72,7 +75,7 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
         if(charArray[i]=='(')
         {
             short nBrackets = 1;
-            short start = 0;
+            short start = i+1;
             while(nBrackets != 0)
             {
                 i++;
@@ -83,36 +86,26 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
                 else if(charArray[i] == ')')
                     nBrackets--;
             }
-            bracketCopywriter(&copy,&currentCharacter);
+            bracketCopywriter(&copy,&currentCharacter,start, i-1);
             ABrackets++;
-            // copy[currentCharacter] = 'M';
-            // currentCharacter++;
-            // copy[currentCharacter] = 'A';
-            // currentCharacter++;
-            // copy[currentCharacter] = 'K';
-            // currentCharacter++;
-            // copy[currentCharacter] = 'i';
-            // currentCharacter++;
-            // copy[currentCharacter] = 'T';
-            // currentCharacter++;
-
-
-
             i++;
         }
         copy = realloc(copy,currentCharacter+1);
         copy[currentCharacter] = charArray[i];
         currentCharacter++;
     }
+
     printf("\nnumber of brackets: %d",ABrackets);
-    *sizeOfResult = currentCharacter;
+    return currentCharacter;
+}
+
+char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
+{
+    char * copy = malloc(sizeOfArray);
+
+    *sizeOfResult = bracketCopywriterBuffer(copy,charArray, sizeOfArray);
 
     return copy;
-    // charArray = realloc(charArray,currentCharacter);
-    // for(int i = 0; i < currentCharacter;i++)
-    // {
-    //     charArray[i] = copy[i];
-    // }
 }
 
 
