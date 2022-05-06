@@ -6,5 +6,7 @@
 ## Versions
 0. 0.0.1
     - Added basic defines and structs
-0. 0.1.0
+1. 0.1.0
     - Added basic text parsing functions
+2. 0.2.0
+    - Added bracket detection
