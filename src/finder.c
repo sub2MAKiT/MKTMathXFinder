@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-#define equationString "x*(2+3)=1/(x+1)"
+#define equationString "x*(2+3)=1/(x+1)+2+4+(9*659/4)"//  x+2=3
 
 #define subChar '-'
 #define addChar '+'
@@ -37,12 +37,35 @@ double checkForDivision(char * charArray,size_t sizeOfArray, short character) {
     return FinalInt;
 }
 
-double bracketCopywriter()
+size_t bracketCopywriter(char ** charArray, short * currentCharacter)
 {
-    double finalInt; // comedy strikes again
+    size_t finalInt; // comedy strikes again
+    char * copy = malloc(2);
 
-
-
+    copy[0] = 'M';
+    copy[1] = 'A';
+    finalInt = 2;
+    for(int i = 0; i < *currentCharacter;i++)
+    {
+        printf("%c",charArray[0][i]);
+    }
+    printf("\n");
+    printf("%d",*currentCharacter);
+    printf("\n");
+    charArray[0]=realloc(charArray[0],*currentCharacter+finalInt);
+    for(int i = 0; i < finalInt;i++)
+    {
+        charArray[0][*currentCharacter] = copy[i];
+        printf("%c",charArray[0][*currentCharacter]);
+        *currentCharacter++;
+    }
+    printf("\n");
+    for(int i = 0; i < *currentCharacter;i++)
+    {
+        printf("%c",charArray[0][i]);
+    }
+    printf("\n");
+    free(copy);
     return finalInt;
 }
 
@@ -50,26 +73,45 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
 {
     char * copy = malloc(sizeOfArray);
     short currentCharacter = 0;
+    short ABrackets = 0;
     for(int i = 0; i < sizeOfArray;i++)
     {
         if(charArray[i]=='(')
         {
             short nBrackets = 1;
+            short start = 0;
             while(nBrackets != 0)
             {
                 i++;
                 if(charArray[i] == '(')
+                {
                     nBrackets++;
+                }
                 else if(charArray[i] == ')')
                     nBrackets--;
             }
+            bracketCopywriter(&copy,&currentCharacter);
+            ABrackets++;
+            // copy[currentCharacter] = 'M';
+            // currentCharacter++;
+            // copy[currentCharacter] = 'A';
+            // currentCharacter++;
+            // copy[currentCharacter] = 'K';
+            // currentCharacter++;
+            // copy[currentCharacter] = 'i';
+            // currentCharacter++;
+            // copy[currentCharacter] = 'T';
+            // currentCharacter++;
+
+
+
             i++;
         }
         copy = realloc(copy,currentCharacter+1);
         copy[currentCharacter] = charArray[i];
         currentCharacter++;
     }
-
+    printf("\nnumber of brackets: %d",ABrackets);
     *sizeOfResult = currentCharacter;
 
     return copy;
@@ -128,6 +170,11 @@ int main()
     for(int i = 0; i < XFlags.sizeOfResult;i++)
     {
         printf("\n%d.%c",i,XFlags.result[i]);
+    }
+    printf("\n");
+    for(int i = 0; i < XFlags.sizeOfResult;i++)
+    {
+        printf("%c",XFlags.result[i]);
     }
 
     printf("\nx ∈ R\n");
