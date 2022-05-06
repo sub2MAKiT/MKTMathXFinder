@@ -47,7 +47,7 @@ size_t checkForNumberSize(MKTDOUBLE number)
     size_t finalSize;
     MKTDOUBLE fractpart, intpart;
 
-    fractpart = modf(number,&intpart);
+    fractpart = modf(number*(1-(2*(number<0))),&intpart);
 
     int powersOfTen=1;
 
@@ -64,15 +64,13 @@ size_t checkForNumberSize(MKTDOUBLE number)
     if(fractpart != 0)
     {
         finalSize++;
-    printf("\nfinalsize3: %d, %f",finalSize,number);
+        printf("\nfinalsize3: %d, %f",finalSize,number);
         powersOfTen=0;
         
-    printf("\nfinalsize4: %d, %f",finalSize,number);
+        printf("\nfinalsize4: %d, %f",finalSize,number);
     while(fractpart-floor(fractpart+0.1)>0)
     {
-        printf("\nfractpart %d, %f, %f, %f",powersOfTen,fractpart,floor(fractpart+0.1),fractpart-floor(fractpart+0.1));
-        if(fractpart == floor(fractpart+0.1))
-            break;
+        printf("\nfractpart %d, %f, %f, %f",powersOfTen,fractpart,floor(fractpart+0.1),abs(fractpart)-floor(abs(fractpart)+0.1));
         fractpart *= 10;
         powersOfTen++;
     }
@@ -82,7 +80,8 @@ size_t checkForNumberSize(MKTDOUBLE number)
     printf("\nfinalsize6: %d, %f",finalSize,number);
     }
     finalSize++;
-    finalSize++;
+    if(number < 0)
+        finalSize++;    
     printf("\nfinalsize7: %d, %f",finalSize,number);
 
     return finalSize;
@@ -127,9 +126,7 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,short place, MKTDOUB
 
         charArray[place+1] = 'x';
     } else {
-        if(number < 0)
-            charArray[place] = '-';
-        else
+        if(number >= 0)
             charArray[place] = '+';
         char * numberOfCharacter;
         numberOfCharacter = malloc(sizeOfCharacter);
@@ -137,7 +134,7 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,short place, MKTDOUB
         printf("\narray");
         for(int i = 0;i < sizeOfCharacter-1;i++)
         {
-            charArray[place + i + 1] = numberOfCharacter[i];
+            charArray[place + i + (number>=0)] = numberOfCharacter[i];
         }
         free(numberOfCharacter);
         //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -362,6 +359,7 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
     // *sizeOfResult = finalPlacer(copy,*sizeOfResult); // places 'x' on the left, and the numbers on the right
     printf("\nwe have");
     *sizeOfResult = characterPlacer(copy, *sizeOfResult,2, 420.70, false, false);
+    *sizeOfResult = characterPlacer(copy, *sizeOfResult,0, -420.70, false, false);
     printf(" a problem");
     
     *sizeOfResult = simpleEquationParser(copy, *sizeOfResult);
