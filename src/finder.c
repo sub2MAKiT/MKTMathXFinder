@@ -11,7 +11,7 @@
 
 #define MKTDOUBLE double
 
-#define equationString "x+3+1-2=x3+1+x-x2"//   x*(2+3)=1/(x+1)+2+4+(9*659/4) x=1
+#define equationString "x+3+1-2=x3+1+x-x2"//   x*(2+3)=1/(x+1)+2+4+(9*659/4)
 
 #define subChar '-'
 #define addChar '+'
@@ -106,6 +106,9 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MK
 
     sizeOfCharacter = checkForNumberSize(number);
 
+    if(isX)
+        sizeOfCharacter++;
+
     sizeOfArray += sizeOfCharacter;
     charArray = realloc(charArray,sizeOfArray);
     for(int i = sizeOfArray; i >= place+sizeOfCharacter;i--)
@@ -125,9 +128,9 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MK
         numberOfCharacter = malloc(sizeOfCharacter);
 
         snprintf(numberOfCharacter,sizeOfCharacter,"%f",fabs(number) );
-        for(int i = 1;i < sizeOfCharacter;i++)
+        for(int i = 0;i < sizeOfCharacter-2;i++)
         {
-            charArray[place + i + 1] = numberOfCharacter[i];
+            charArray[place + i + 2] = numberOfCharacter[i];
         }
         free(numberOfCharacter);
 
@@ -160,28 +163,30 @@ MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, si
     MKTDOUBLE finalResult;
     bool isNegative = false;
 
-
-    finalResult = 1;
-    if(charArray[startingCharacter] == subChar)
-        isNegative = true;
-
-    finalResult *= isNegative?-1:1;
-
-    if(charArray[startingCharacter+1]=='x')
+        finalResult = 1;
+    if(!*isX)
     {
-        *isX = true;
-        return finalResult;
-    } else {
-        *isX = false;
-    }
 
+        if(charArray[startingCharacter] == subChar)
+            isNegative = true;
+
+        finalResult *= isNegative?-1:1;
+
+        if(charArray[startingCharacter+1]=='x')
+        {
+            *isX = true;
+            return finalResult;
+        } else {
+            *isX = false;
+        }
+    } else {
+    startingCharacter++;
+        if(charArray[startingCharacter+1] == subChar ||charArray[startingCharacter+1] == addChar ||charArray[startingCharacter+1] == '=')
+            return finalResult;
+    }
     long long fractionDivider = 1;
 
-
-
     finalResult = (charArray[startingCharacter+1] - '0') * (isNegative?-1:1);
-
-
     for(int i = startingCharacter+2;charArray[i]!=subChar && charArray[i]!=addChar && charArray[i]!='=' && i < sizeOfArray;i++)
     {
         if(charArray[i] == sidChar)
@@ -196,7 +201,6 @@ MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, si
             finalResult += (charArray[i] - '0') * (isNegative?-1:1);
         }
     }
-
     return finalResult;
 }
 
@@ -239,19 +243,21 @@ size_t finalPlacer(char * charArray, size_t sizeOfArray)
             leftSide = false;
         if(charArray[i] == subChar || charArray[i] == addChar)
         {
+            isX = false;
             movingChar = numberChecker(charArray,i,&isX,sizeOfArray);
             if(isX)
             {
-                if(false)
+                if(!leftSide)
                 {
                     bool isNotNegative;
                     if(charArray[i] == subChar)
                         isNotNegative = false;
                     else
                         isNotNegative = true;
-                    movingChar = numberChecker(charArray,i+2,&isX,sizeOfArray);
-                    // finalSize = numberRemover(charArray,finalSize,i);
+                    movingChar = numberChecker(charArray,i,&isX,sizeOfArray);
+                    finalSize = numberRemover(charArray,finalSize,i);
                     finalSize = characterPlacer(charArray, finalSize,true, movingChar, true, isNotNegative);
+                    i--;
                 }
             } else {
                 if(leftSide)
@@ -312,8 +318,56 @@ size_t simpleEquationParser(char * charArray, size_t sizeOfArray)
 {
     size_t finalSize;
     finalSize = sizeOfArray;
+    bool afterEqual= false;
 
-    return finalSize;
+    MKTDOUBLE XVALUE = 0;
+    MKTDOUBLE INTVALUE = 0; // comedy
+
+    MKTDOUBLE movingChar;
+    for(int i = 0; i < sizeOfArray;i++)
+    {
+        if(charArray[i] == '=')
+        { afterEqual = true; } else if((charArray[i] == subChar || charArray[i] == addChar) && !afterEqual)
+        {
+            bool isX = true;
+            movingChar = numberChecker(charArray,i,&isX,finalSize);
+            if(charArray[i] == subChar)
+                XVALUE -= movingChar;
+            else
+                XVALUE += movingChar;
+        } else if((charArray[i] == subChar || charArray[i] == addChar) && afterEqual) {
+            bool isX = false;
+            movingChar = numberChecker(charArray,i,&isX,finalSize);
+            INTVALUE += movingChar;
+        }
+    }
+
+    printf("\n%fx=%f",XVALUE,INTVALUE);
+        size_t sizeOfFinalArray = 0;
+
+    if(XVALUE != 0 && INTVALUE != 0)
+    {
+        sizeOfFinalArray = 2;
+
+        INTVALUE = INTVALUE / XVALUE;
+
+        sizeOfFinalArray += checkForNumberSize(INTVALUE);
+
+        charArray = realloc(charArray,sizeOfFinalArray);
+
+        snprintf(charArray,sizeOfFinalArray,"x=%f",INTVALUE );
+    } else if(XVALUE == 0 && INTVALUE == 0)
+    {
+        sizeOfFinalArray = 7;
+        charArray = realloc(charArray,sizeOfFinalArray);
+        snprintf(charArray,sizeOfFinalArray,"\nx ∈ R\n");
+    } else if((XVALUE == 0 && INTVALUE != 0) || (XVALUE != 0 && INTVALUE == 0))
+    {
+        sizeOfFinalArray = 16;
+        charArray = realloc(charArray,sizeOfFinalArray);
+        snprintf(charArray,sizeOfFinalArray,"\nwrong equation\n");
+    }
+    return sizeOfFinalArray;
 }
 
 
@@ -411,7 +465,6 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
     // *sizeOfResult = characterPlacer(copy, *sizeOfResult,false, -420.70, false, false);
     
     *sizeOfResult = simpleEquationParser(copy, *sizeOfResult);
-    arrayPrinter(copy, *sizeOfResult);
 
     return copy;
 }
@@ -483,8 +536,5 @@ int main()
     {
         printf("%c",XFlags.result[i]);
     }
-
-    printf("\nx ∈ R\n");
-
     return 0;
 }

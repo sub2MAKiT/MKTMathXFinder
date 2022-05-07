@@ -15,3 +15,5 @@
     - Added string number inserting function
 4. 0.3.0
     - Added int number placer
+5. 0.3.0
+    - MathXFinder is now able to find x in equations with adding and subtracting
