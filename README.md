@@ -13,3 +13,5 @@
 3. 0.2.1
     - Added string number length checking
     - Added string number inserting function
+4. 0.3.0
+    - Added int number placer
