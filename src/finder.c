@@ -11,7 +11,7 @@
 
 #define MKTDOUBLE double
 
-#define equationString "x+3+1-2=x3+1+x-x2"//   x*(2+3)=1/(x+1)+2+4+(9*659/4)
+#define equationString "x/3+4+1/1=x/2+2/2"//x=24   x*(2+3)=1/(x+1)+2+4+(9*659/4) 24/x+x/3+4=x/2+1 x/3+4+1/1+1=x/2+2/2+24/x //pwned// x+3+1-2=x3+1+x-x2
 
 #define subChar '-'
 #define addChar '+'
@@ -30,19 +30,21 @@ struct xFlags {
 
 typedef struct xFlags MKTXFLAGS;
 
+size_t smartCharacterPlacer(char * charArray, size_t sizeOfArray,short place, MKTDOUBLE number, bool isX, bool isNegative);
 void arrayPrinter(char * charArray, size_t SizeOfArray);
+size_t smartMultiply(char * charArray, size_t sizeOfArray, MKTDOUBLE number);
 size_t checkForNumberSize(MKTDOUBLE number);
 size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MKTDOUBLE number, bool isX, bool isNegative);
 MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, size_t sizeOfArray);
 size_t finalPlacer(char * charArray, size_t sizeOfArray);
 size_t characterChangerAddSub(char * charArray, size_t sizeOfArray);
 size_t simpleEquationParser(char * charArray, size_t sizeOfArray);
-MKTDOUBLE checkForDivision(char * charArray,size_t sizeOfArray);
+size_t checkForDivision(char * charArray,size_t sizeOfArray);
 size_t bracketCopywriter(char ** charArray, short * currentCharacter, short start, short end);
 size_t bracketCopywriterBuffer(char * copy,char * charArray, size_t sizeOfArray);
 char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult);
 MKTXFLAGS checkForX(char * charArray, size_t sizeOfArray, int *errorCode);
-
+size_t multiplierInSpace(char * charArray, size_t sizeOfArray, MKTDOUBLE Mul, bool isX, bool isNegative);
 
 void arrayPrinter(char * charArray, size_t SizeOfArray)
 {
@@ -54,6 +56,55 @@ void arrayPrinter(char * charArray, size_t SizeOfArray)
     }
 
     return;
+}
+
+size_t multiplierInSpace(char * charArray, size_t sizeOfArray, MKTDOUBLE Mul, bool isX, bool isNegative)
+{
+    size_t finalSize;
+    finalSize = sizeOfArray;
+    bool notCoreNumber = false;
+    bool numberDetected = true;
+
+    for(int i = 0; i < finalSize;i++)
+    {
+        if(numberDetected && (charArray[i] == addChar || charArray[i] == subChar))
+        {
+            i++;
+            if(notCoreNumber) {notCoreNumber = false;} else {
+                while(charArray[i] != addChar && charArray[i]!= subChar && charArray[i]!= mulChar && charArray[i]!= divChar && charArray[i]!= '=')
+                    i++;
+                finalSize++;
+                charArray = realloc(charArray,finalSize);
+                printf("\narrayPrinter:");
+                arrayPrinter(charArray, sizeOfArray);
+                for(int a = finalSize; a > i; a--)
+                {
+                    charArray[a] = charArray[a-1];
+                }
+                charArray[i] = '*';
+                i++;
+                finalSize = smartCharacterPlacer(charArray, finalSize,i, Mul, isX, isNegative);
+                numberDetected = false;
+            }
+        }
+
+        if(charArray[i] == divChar || charArray[i] == mulChar)
+            notCoreNumber = true;
+
+        if(charArray[i] == subChar || charArray[i] == addChar)
+            numberDetected = true;       
+    }
+
+
+    return finalSize;
+}
+
+size_t smartMultiply(char * charArray, size_t sizeOfArray, MKTDOUBLE number)
+{
+    size_t finalSize;
+    finalSize = sizeOfArray;
+
+    return finalSize;
 }
 
 size_t checkForNumberSize(MKTDOUBLE number)
@@ -158,6 +209,59 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MK
     return finalSize;
 }
 
+size_t smartCharacterPlacer(char * charArray, size_t sizeOfArray,short place, MKTDOUBLE number, bool isX, bool isNegative)
+{
+    size_t finalSize;
+    size_t sizeOfCharacter;
+    sizeOfCharacter = checkForNumberSize(number);
+
+    if(isX)
+        sizeOfCharacter++;
+
+    sizeOfArray += sizeOfCharacter;
+    charArray = realloc(charArray,sizeOfArray);
+    for(int i = sizeOfArray; i >= place+sizeOfCharacter;i--)
+    {
+        charArray[i] = charArray[i-sizeOfCharacter];
+    }
+    if(isX)
+    {
+        if(isNegative)
+            charArray[place] = '-';
+        else
+            charArray[place] = '+';
+
+        charArray[place+1] = 'x';
+
+        char * numberOfCharacter;
+        numberOfCharacter = malloc(sizeOfCharacter);
+
+        snprintf(numberOfCharacter,sizeOfCharacter,"%f",fabs(number) );
+        for(int i = 0;i < sizeOfCharacter-2;i++)
+        {
+            charArray[place + i + 2] = numberOfCharacter[i];
+        }
+        free(numberOfCharacter);
+
+        return finalSize;
+    } else {
+        if(number >= 0)
+            charArray[place] = '+';
+        else
+            charArray[place] = '-';
+        char * numberOfCharacter;
+        numberOfCharacter = malloc(sizeOfCharacter);
+        snprintf(numberOfCharacter,sizeOfCharacter,"%f",fabs(number) );
+        for(int i = 0;i < sizeOfCharacter-1;i++)
+        {
+            charArray[place + i + 1] = numberOfCharacter[i];
+        }
+        free(numberOfCharacter);
+    }
+    finalSize = sizeOfArray;
+    return finalSize;
+}
+
 MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, size_t sizeOfArray)
 {
     MKTDOUBLE finalResult;
@@ -181,24 +285,27 @@ MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, si
         }
     } else {
     startingCharacter++;
-        if(charArray[startingCharacter+1] == subChar ||charArray[startingCharacter+1] == addChar ||charArray[startingCharacter+1] == '=')
+        if(charArray[startingCharacter+1] == subChar ||charArray[startingCharacter+1] == addChar ||charArray[startingCharacter+1] == '='||charArray[startingCharacter+1] == divChar || charArray[startingCharacter+1] == mulChar)
             return finalResult;
     }
     long long fractionDivider = 1;
 
     finalResult = (charArray[startingCharacter+1] - '0') * (isNegative?-1:1);
-    for(int i = startingCharacter+2;charArray[i]!=subChar && charArray[i]!=addChar && charArray[i]!='=' && i < sizeOfArray;i++)
+    if(charArray[startingCharacter+2] != 0)
     {
-        if(charArray[i] == sidChar)
+        for(int i = startingCharacter+2;charArray[i]!=subChar && charArray[i]!=addChar && charArray[i]!='=' && i < sizeOfArray && charArray[i]!=divChar && charArray[i]!=mulChar;i++)
         {
-            fractionDivider *= 10;
-        } else if (fractionDivider != 1)
-        {
-            finalResult = ((charArray[startingCharacter+1] - '0') * (isNegative?-1:1))/fractionDivider;
-            fractionDivider *= 10;
-        } else {
-            finalResult *= 10;
-            finalResult += (charArray[i] - '0') * (isNegative?-1:1);
+            if(charArray[i] == sidChar)
+            {
+                fractionDivider *= 10;
+            } else if (fractionDivider != 1)
+            {
+                finalResult = ((charArray[startingCharacter+1] - '0') * (isNegative?-1:1))/fractionDivider;
+                fractionDivider *= 10;
+            } else {
+                finalResult *= 10;
+                finalResult += (charArray[i] - '0') * (isNegative?-1:1);
+            }
         }
     }
     return finalResult;
@@ -311,6 +418,23 @@ size_t characterChangerAddSub(char * charArray, size_t sizeOfArray)
     }
 
     finalSize = sizeOfArray;
+    for(int i = 0; i < finalSize; i++)
+    {
+        if(charArray[i] == divChar || charArray[i] == mulChar)
+        {
+            if(charArray[i+1] != subChar)
+            {
+                finalSize++;
+                charArray = realloc(charArray,finalSize);
+                for(int a = finalSize;a > i+1;a--)
+                {
+                    charArray[a] = charArray[a-1];
+                }
+                charArray[i+1] = addChar;
+            }
+        }
+    }
+
     return finalSize;
 }
 
@@ -371,17 +495,84 @@ size_t simpleEquationParser(char * charArray, size_t sizeOfArray)
 }
 
 
-MKTDOUBLE checkForDivision(char * charArray,size_t sizeOfArray) {
-    MKTDOUBLE FinalInt; // comedy
+size_t checkForDivision(char * charArray,size_t sizeOfArray) {
+    size_t FinalSize;
+    FinalSize = sizeOfArray;
 
+    for(int i = 0; i < sizeOfArray;i++)
+    {
+        if(charArray[i] == divChar)
+        {
+            printf("\ndetected divide character %d",i);
+            bool leftIsX = false;
+            bool rightIsX = false;
+            for(int a = i; charArray[a] != addChar && charArray[a] != subChar;a--)
+            {
+                if(charArray[a] == 'x')
+                {
+                    leftIsX = true;
+                    break;
+                }
+            }
+            for(int a = i+2; charArray[a] != addChar && charArray[a] != subChar && a < FinalSize;a++)
+            {
+                if(charArray[a] == 'x')
+                {
+                    rightIsX = true;
+                    break;
+                }
+            }
+            if(!leftIsX && !rightIsX)
+            {
+                printf("\ndetected divide int by int %d",i);
 
+                MKTDOUBLE left = 1;
+                MKTDOUBLE right = 1;
+                short aPlace = 0;
+                bool isX;
+                isX = false;
+                for(int a = i; a >= 0 ;a--)
+                {
+                    if(charArray[a] == addChar || charArray[a] == subChar)
+                    {
+                        left = numberChecker(charArray,a,&isX,FinalSize);
+                        aPlace = a;
+                        break;
+                    }
+                }
+                right = numberChecker(charArray,i+1,&isX,FinalSize);
+                FinalSize = numberRemover(charArray,FinalSize,i+1);
+                FinalSize = numberRemover(charArray,FinalSize,aPlace);
+                arrayPrinter(charArray, FinalSize);
+                for(int a = aPlace; a < sizeOfArray-1;a++)
+                {
+                    charArray[a] = charArray[a+1];
+                }
+                FinalSize--;
+                charArray = realloc(charArray,FinalSize);
+                FinalSize = smartCharacterPlacer(charArray,FinalSize,aPlace,left/right,isX,false);
+                arrayPrinter(charArray, FinalSize);
+                i = 0;
+            } else if(leftIsX && !rightIsX) {
+                printf("\ndetected divide x by int %d",i);
 
-    return FinalInt;
+            } else if(!leftIsX && rightIsX) {
+
+                printf("\ndetected divide int by x %d",i);
+            } else {
+                
+                printf("\ndetected divide x by x %d",i);
+            }
+
+        }
+    }
+
+    return FinalSize;
 }
 
 size_t bracketCopywriter(char ** charArray, short * currentCharacter, short start, short end)
 {
-    size_t finalInt; // comedy strikes again
+    size_t finalInt;
 
 
     finalInt = end-start+1;
@@ -454,15 +645,24 @@ char * Copywriter(char * charArray, size_t sizeOfArray, size_t *sizeOfResult)
     size_t tempSizeOfResult = 0;
 
     *sizeOfResult = bracketCopywriterBuffer(copy,charArray, sizeOfArray); // removes brackets
+    printf("\nbracketCopywriter:");
     arrayPrinter(copy, *sizeOfResult);
 
     *sizeOfResult = characterChangerAddSub(copy, *sizeOfResult); // places '+' characters before numbers
+    printf("\ncharacterChangerAddSub:");
+    arrayPrinter(copy, *sizeOfResult);
+
+    *sizeOfResult = checkForDivision(copy,*sizeOfResult);
+    printf("\ndivisionChecker:");
+    arrayPrinter(copy, *sizeOfResult);
+
+    *sizeOfResult = multiplierInSpace(copy, *sizeOfResult, 9, false, false);
+    printf("\nmultiplied:");
     arrayPrinter(copy, *sizeOfResult);
 
     *sizeOfResult = finalPlacer(copy,*sizeOfResult); // places 'x' on the left, and the numbers on the right
+    printf("\nfinalPlacer:");
     arrayPrinter(copy, *sizeOfResult);
-    // *sizeOfResult = characterPlacer(copy, *sizeOfResult,true, 420.70, false, false);
-    // *sizeOfResult = characterPlacer(copy, *sizeOfResult,false, -420.70, false, false);
     
     *sizeOfResult = simpleEquationParser(copy, *sizeOfResult);
 

@@ -17,3 +17,5 @@
     - Added int number placer
 5. 0.3.0
     - MathXFinder is now able to find x in equations with adding and subtracting
+6. 0.3.1
+    - Added the foundation for the division handling
