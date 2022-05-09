@@ -21,3 +21,5 @@
     - Added the foundation for the division handling
 7. 0.3.2
     - Fixed the fractions
+8. 0.4.0
+    - MathXFinder is now able to find x in equations with multiplying
