@@ -19,3 +19,5 @@
     - MathXFinder is now able to find x in equations with adding and subtracting
 6. 0.3.1
     - Added the foundation for the division handling
+7. 0.3.2
+    - Fixed the fractions
