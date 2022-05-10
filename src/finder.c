@@ -11,7 +11,7 @@
 
 #define MKTDOUBLE double
 
-#define equationString "x*2=3"//x=24 x*(2+3)=1/(x+1)+2+4+(9*659/4) 24/x+x/3+4=x/2+1 x/3+4+1/1+1=x/2+2/2+24/x x/3+4+1/1=x/2+2/2 //pwned// x+3+1-2=x3+1+x-x2 | x+1.7=2.8 | x*2=3
+#define equationString "x*2+1.5=3+x"//x=24 x*(2+3)=1/(x+1)+2+4+(9*659/4) 24/x+x/3+4=x/2+1 x/3+4+1/1+1=x/2+2/2+24/x x/3+4+1/1=x/2+2/2 //pwned// x+3+1-2=x3+1+x-x2 | x+1.7=2.8 | x*2=3
 
 #define subChar '-'
 #define addChar '+'
@@ -247,6 +247,7 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MK
         }
         free(numberOfCharacter);
 
+    finalSize = sizeOfArray;
         return finalSize;
     } else {
         if(number >= 0)
@@ -346,7 +347,7 @@ MKTDOUBLE numberChecker(char * charArray,short startingCharacter, bool * isX, si
         }
     } else {
         startingCharacter++;
-        if(charArray[startingCharacter+1] == subChar ||charArray[startingCharacter+1] == addChar ||charArray[startingCharacter+1] == '='||charArray[startingCharacter+1] == divChar || charArray[startingCharacter+1] == mulChar)
+        if((charArray[startingCharacter+1] == subChar ||charArray[startingCharacter+1] == addChar ||charArray[startingCharacter+1] == '='||charArray[startingCharacter+1] == divChar || charArray[startingCharacter+1] == mulChar) || startingCharacter+1 >= sizeOfArray-1)
             return finalResult;
     }
     long long fractionDivider = 1;
@@ -408,7 +409,7 @@ size_t finalPlacer(char * charArray, size_t sizeOfArray)
     bool isX;
     bool leftSide = true;
     MKTDOUBLE movingChar;
-    for(int i = 0; i < sizeOfArray;i++)
+    for(int i = 0; i < finalSize;i++)
     {
         if(charArray[i] == '=')
             leftSide = false;

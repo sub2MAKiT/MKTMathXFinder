@@ -23,3 +23,5 @@
     - Fixed the fractions
 8. 0.4.0
     - MathXFinder is now able to find x in equations with multiplying
+9. 0.4.1
+    - Fixed a major buffer overflow bug
