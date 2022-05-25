@@ -1,7 +1,11 @@
 ## ErrorCodes:
 0. no errors
-1. error whilst computing
-2. wrong equation
+1. system error
+2. empty input
+3. unsupported starting character
+4. unsupported character
+5. two equal characters detected
+6. no equal characters detected
 
 ## Versions
 0. 0.0.1
@@ -25,3 +29,5 @@
     - MathXFinder is now able to find x in equations with multiplying
 9. 0.4.1
     - Fixed a major buffer overflow bug
+10. 0.5.0
+    - Cleaned up some code

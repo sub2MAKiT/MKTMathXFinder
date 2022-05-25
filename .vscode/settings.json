@@ -3,6 +3,13 @@
         "cstdlib": "c",
         "cmath": "c",
         "stdlib.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "mainheader.h": "c",
+        "parser.h": "c",
+        "parsing.h": "c",
+        "finder.h": "c",
+        "convenience.h": "c",
+        "mktgnubasedlibrary.h": "c",
+        "stdbool.h": "c"
     }
 }
