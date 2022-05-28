@@ -1,6 +1,6 @@
 #include "headers/parser.h"
-#include <MKTgnubasedlibrary.h>
-
+#include <MKTmisc/MKTGNUbasedHeaders/MKTmath.h>
+#include <MKTmisc/MKTSimpleErrorHandling.h>
 
 
 size_t numberRemover(char * charArray,size_t sizeOfArray, short number)
@@ -183,12 +183,12 @@ size_t characterPlacer(char * charArray, size_t sizeOfArray,bool placeOnLeft, MK
     return finalSize;
 }
 
-size_t basicFirstChecker(char * charArray, size_t sizeOfArray, int * errorCode)
+size_t basicFirstChecker(char * charArray, size_t sizeOfArray, ERRORVARIABLE * errorCode)
 {
     size_t finalSize = sizeOfArray;
     short isDivision = false;
 
-    if(!(charArray[0] == subChar || charArray[0] == addChar || charArray[0] == mulChar || charArray[0] == divChar || charArray[0] == powChar || charArray[0] == sqrChar || charArray[0] == sidChar || charArray[0] == eqChar || (charArray[0] < 58 && charArray[0] > 47 )))
+    if(!(charArray[0] == subChar || charArray[0] == addChar || charArray[0] == mulChar || charArray[0] == divChar || charArray[0] == powChar || charArray[0] == sqrChar || charArray[0] == sidChar || charArray[0] == eqChar || (charArray[0] < 58 && charArray[0] > 47 ) || charArray[0] == 'x' || charArray[0] =='X'))
         *errorCode = 3;
     
     bool detectedEqual = false;
@@ -199,7 +199,7 @@ size_t basicFirstChecker(char * charArray, size_t sizeOfArray, int * errorCode)
             detectedEqual = true;
         else if(charArray[i] == '=' && detectedEqual)
             *errorCode = 5;
-        if(!(charArray[i] == subChar || charArray[i] == addChar || charArray[i] == mulChar || charArray[i] == divChar || charArray[i] == powChar || charArray[i] == sqrChar || charArray[i] == sidChar || charArray[i] == eqChar || (charArray[i] < 58 && charArray[i] > 47 )))
+        if(!(charArray[i] == subChar || charArray[i] == addChar || charArray[i] == mulChar || charArray[i] == divChar || charArray[i] == powChar || charArray[i] == sqrChar || charArray[i] == sidChar || charArray[i] == eqChar || (charArray[i] < 58 && charArray[i] > 47 ) || charArray[i] == 'x' || charArray[i] =='X'))
             *errorCode = 4;
     }
     if(!detectedEqual)

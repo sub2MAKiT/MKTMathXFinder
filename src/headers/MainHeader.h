@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <MKTmisc/MKTSimpleErrorHandling.h>
 
 #ifdef _MKTDEBUGBOOL
 #define MKTDEBUGBOOL true
@@ -10,14 +11,6 @@
 #endif
 
 #define MKTDOUBLE double
-
-#define HANDLE_ERRORS printf("\033[90;40mSTEP: \033[93;40m%d\n\033[97;40m",step); \
-step++;\
-if(errorCode != 0)\
-{\
-    checkForErrors(errorCode);\
-    return errorCode;\
-} else
 
 #define SETUP size_t sizeOfArray = sizeOfString(argv[1]);\
     char * equation = malloc(sizeOfArray);\

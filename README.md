@@ -31,3 +31,5 @@
     - Fixed a major buffer overflow bug
 10. 0.5.0
     - Cleaned up some code
+11. 0.5.1
+    - Implemented the error handling using the ```<MKTSimpleErrorHandling.h>```

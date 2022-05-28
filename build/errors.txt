@@ -1,0 +1,7 @@
+0 - no errors
+1 - system error
+2 - empty input
+3 - unsupported starting character
+4 - unsupported character
+5 - two equal characters detected
+6 - no equal characters detected

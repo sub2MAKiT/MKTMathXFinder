@@ -1,4 +1,5 @@
 #include "headers/finder.h"
+#include <MKTmisc/MKTSimpleErrorHandling.h>
 
 short goUntilNotACoreNumber(char * charArray, size_t sizeOfArray, short number)
 {
@@ -331,10 +332,7 @@ size_t simpleEquationParser(char * charArray, size_t sizeOfArray)
         {
             bool isX = true;
             movingChar = numberChecker(charArray,i,&isX,finalSize);
-            if(charArray[i] == subChar)
-                XVALUE -= movingChar;
-            else
-                XVALUE += movingChar;
+            XVALUE += movingChar * (charArray[i]==subChar?-1:1);
         } else if((charArray[i] == subChar || charArray[i] == addChar) && afterEqual) {
             bool isX = false;
             movingChar = numberChecker(charArray,i,&isX,finalSize);
@@ -342,7 +340,6 @@ size_t simpleEquationParser(char * charArray, size_t sizeOfArray)
             INTVALUE += movingChar;
         }
     }
-    printf("\n%fx=%f",XVALUE,INTVALUE);
         size_t sizeOfFinalArray = 0;
 
     if(XVALUE != 0 && INTVALUE != 0)

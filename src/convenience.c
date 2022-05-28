@@ -1,14 +1,13 @@
 #include "headers/convenience.h"
 
-
 void arrayPrinter(char * charArray, size_t SizeOfArray)
 {
-    printf("\n");
 
     for(int i = 0; i < SizeOfArray;i++)
     {
         printf("%c",charArray[i]);
     }
+    printf("\n");
 
     return;
 }
@@ -48,7 +47,7 @@ bool checkForErrors(int errorCode)
         case 6:
             printf(ERRORSTRING "no equal characters detected\033[39;49m\n",errorCode);
             break;
-            
+
         Error = false;
     }
     return Error;
