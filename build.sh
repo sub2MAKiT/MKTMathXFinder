@@ -1,0 +1,1 @@
+gcc ./src/finder.c ./src/main.c ./src/parser.c ./src/convenience.c -I c:/sdk/ -o ./build/MKT_L
